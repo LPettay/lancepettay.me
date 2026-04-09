@@ -1360,7 +1360,7 @@ ul { list-style: none; }
   100% { transform: scale(1.5); opacity: 0; }
 }
 
-/* Panel — desktop: floating card, mobile: bottom sheet */
+/* Panel — desktop: floating card, mobile: full screen */
 .chat-panel {
   position: fixed;
   bottom: 5.5rem;
@@ -1372,19 +1372,13 @@ ul { list-style: none; }
   border: 1px solid var(--border);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
   z-index: 899;
-  display: flex;
+  display: none;
   flex-direction: column;
   overflow: hidden;
-  opacity: 0;
-  transform: translateY(12px) scale(0.97);
-  pointer-events: none;
-  transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out);
 }
 
 .chat-panel.open {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
+  display: flex;
 }
 
 /* Drag handle — mobile only */
@@ -1778,7 +1772,7 @@ ul { list-style: none; }
     display: none;
   }
 
-  /* Chat on mobile — absolute inside overlay */
+  /* Chat on mobile — full screen, slide up */
   .chat-panel {
     position: fixed;
     top: 0;
@@ -1792,14 +1786,16 @@ ul { list-style: none; }
     border: none;
     box-shadow: none;
     background: var(--bg);
-    opacity: 0;
+    opacity: 1;
+    pointer-events: none;
     transform: translateY(100%);
+    transition: transform 0.3s var(--ease-out);
     z-index: 960;
   }
 
   .chat-panel.open {
-    opacity: 1;
     transform: translateY(0);
+    pointer-events: auto;
   }
 
   .chat-fab {
@@ -1808,7 +1804,6 @@ ul { list-style: none; }
     z-index: 950;
   }
 
-  /* When chat is open, hide FAB */
   .chat-fab.active {
     display: none;
   }
@@ -1818,9 +1813,9 @@ ul { list-style: none; }
   }
 
   .chat-close {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
   }
 }
 
