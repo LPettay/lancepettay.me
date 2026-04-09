@@ -342,9 +342,47 @@ document.addEventListener('DOMContentLoaded', () => {
   chatFab.addEventListener('click', toggleChat);
   chatClose.addEventListener('click', closeChat);
 
-  // Drag handle closes chat on mobile
+  // Swipe down to close chat on mobile
   const dragHandle = document.querySelector('.chat-drag-handle');
-  if (dragHandle) dragHandle.addEventListener('click', closeChat);
+  if (dragHandle) {
+    dragHandle.addEventListener('click', closeChat);
+
+    let touchStartY = 0;
+    let touchCurrentY = 0;
+    let isDragging = false;
+
+    chatPanel.addEventListener('touchstart', (e) => {
+      // Only start drag from the header area (top 60px)
+      const rect = chatPanel.getBoundingClientRect();
+      const touchY = e.touches[0].clientY - rect.top;
+      if (touchY > 60) return;
+      touchStartY = e.touches[0].clientY;
+      isDragging = true;
+      chatPanel.style.transition = 'none';
+    }, { passive: true });
+
+    chatPanel.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      touchCurrentY = e.touches[0].clientY;
+      const diff = touchCurrentY - touchStartY;
+      if (diff > 0) {
+        chatPanel.style.transform = `translateY(${diff}px)`;
+      }
+    }, { passive: true });
+
+    chatPanel.addEventListener('touchend', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      chatPanel.style.transition = '';
+      const diff = touchCurrentY - touchStartY;
+      if (diff > 80) {
+        closeChat();
+      }
+      chatPanel.style.transform = '';
+      touchStartY = 0;
+      touchCurrentY = 0;
+    });
+  }
 
   // Lock body scroll when chat open on mobile
   function updateBodyScroll() {
