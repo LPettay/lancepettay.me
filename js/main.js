@@ -305,9 +305,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (chatOpen && window.innerWidth <= 768) {
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = `-${window.scrollY}px`;
       resizeChatToViewport();
     } else {
+      const scrollY = Math.abs(parseInt(document.body.style.top || '0'));
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+      window.scrollTo(0, scrollY);
       chatPanel.style.height = '';
       chatPanel.style.top = '';
     }
