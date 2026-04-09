@@ -69,12 +69,7 @@ export async function onRequestPost(context) {
         { email: email, displayName: name },
       ],
       reminders: {
-        useDefault: false,
-        overrides: [
-          { method: 'email', minutes: 60 },
-          { method: 'popup', minutes: 30 },
-          { method: 'popup', minutes: 10 },
-        ],
+        useDefault: true,
       },
       guestsCanModify: false,
       guestsCanSeeOtherGuests: false,
