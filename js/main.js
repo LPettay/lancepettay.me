@@ -303,11 +303,13 @@ document.addEventListener('DOMContentLoaded', () => {
     chatFab.classList.toggle('active', chatOpen);
     chatPanel.classList.toggle('open', chatOpen);
 
-    // Lock body scroll on mobile when chat is open
     if (chatOpen && window.innerWidth <= 768) {
       document.body.style.overflow = 'hidden';
+      resizeChatToViewport();
     } else {
       document.body.style.overflow = '';
+      chatPanel.style.height = '';
+      chatPanel.style.top = '';
     }
 
     if (chatOpen && !chatInitialized) {
@@ -343,6 +345,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (chatOpen) toggleChat();
   }
 
+
+  // Keep chat panel sized to visual viewport (handles mobile keyboard)
+  function resizeChatToViewport() {
+    if (!chatOpen) return;
+    if (window.visualViewport && window.innerWidth <= 768) {
+      chatPanel.style.height = window.visualViewport.height + 'px';
+      chatPanel.style.top = window.visualViewport.offsetTop + 'px';
+    }
+  }
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', resizeChatToViewport);
+    window.visualViewport.addEventListener('scroll', resizeChatToViewport);
+  }
 
   chatFab.addEventListener('click', toggleChat);
   chatClose.addEventListener('click', closeChat);
