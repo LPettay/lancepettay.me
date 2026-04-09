@@ -304,6 +304,9 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
+      // Reset any keyboard-adjusted sizing
+      chatPanel.style.height = '';
+      chatPanel.style.bottom = '';
     }
 
     if (chatOpen && !chatInitialized) {
@@ -337,6 +340,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function closeChat() {
     if (chatOpen) toggleChat();
+  }
+
+  // Handle mobile keyboard resize — keep chat panel in visible area
+  if ('visualViewport' in window) {
+    window.visualViewport.addEventListener('resize', () => {
+      if (!chatOpen || window.innerWidth > 768) return;
+      const vvh = window.visualViewport.height;
+      chatPanel.style.height = (vvh * 0.6) + 'px';
+      chatPanel.style.bottom = (window.innerHeight - vvh - window.visualViewport.offsetTop) + 'px';
+    });
+
+    window.visualViewport.addEventListener('scroll', () => {
+      if (!chatOpen || window.innerWidth > 768) return;
+      chatPanel.style.bottom = (window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop) + 'px';
+    });
   }
 
   chatFab.addEventListener('click', toggleChat);
