@@ -1031,6 +1031,41 @@ ul { list-style: none; }
   background: rgba(34, 197, 94, 0.15);
 }
 
+.cta-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 680px;
+}
+
+.contact-card-book {
+  cursor: pointer;
+  border-color: rgba(245, 158, 11, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+}
+
+.contact-card-book:hover {
+  border-color: var(--amber) !important;
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.icon-book {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--amber);
+}
+
+.book-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.book-label {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
 .cta-actions {
   display: flex;
   justify-content: center;
@@ -1206,6 +1241,78 @@ ul { list-style: none; }
   width: 18px;
   height: 18px;
   color: var(--text-muted);
+}
+
+/* Chat welcome / consent screen */
+.chat-welcome {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.chat-welcome-inner {
+  max-width: 280px;
+}
+
+.chat-welcome-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 1rem;
+  border: 2px solid var(--primary);
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.2);
+}
+
+.chat-welcome-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.chat-welcome h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.chat-welcome p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
+
+.chat-welcome-details {
+  text-align: left;
+  margin-bottom: 1.25rem;
+}
+
+.chat-welcome-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin-bottom: 0.5rem;
+}
+
+.chat-welcome-item svg {
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.chat-welcome-start {
+  width: 100%;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
 }
 
 /* Chat messages area */
@@ -1501,6 +1608,11 @@ ul { list-style: none; }
 
   .cta-grid {
     grid-template-columns: 1fr;
+  }
+
+  .cta-grid-3 {
+    grid-template-columns: 1fr;
+    max-width: 100%;
   }
 
   .footer-inner {

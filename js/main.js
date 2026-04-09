@@ -255,30 +255,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let chatOpen = false;
   let chatInitialized = false;
+  let chatConsented = false;
   // Conversation history for Claude API
   let conversationHistory = [];
+
+  const chatWelcome = document.getElementById('chatWelcome');
+  const chatStart = document.getElementById('chatStart');
 
   function toggleChat() {
     chatOpen = !chatOpen;
     chatFab.classList.toggle('active', chatOpen);
     chatPanel.classList.toggle('open', chatOpen);
-
-    if (chatOpen) {
-      chatInput.focus();
-      if (!chatInitialized) {
-        chatInitialized = true;
-        // First message comes from Claude
-        showTyping();
-        sendToAPI([{ role: 'user', content: '[Customer just opened the chat widget on lancepettay.me. Send a brief, warm greeting — one sentence max. Do not list services.]' }])
-          .then((reply) => {
-            hideTyping();
-            addBotMessage(reply);
-            // Don't add the synthetic opener to visible history
-            conversationHistory = [{ role: 'assistant', content: reply }];
-          });
-      }
-    }
   }
+
+  // Consent → start chat
+  chatStart.addEventListener('click', () => {
+    chatConsented = true;
+    chatWelcome.style.display = 'none';
+    chatMessages.style.display = 'flex';
+    chatInput.focus();
+
+    if (!chatInitialized) {
+      chatInitialized = true;
+      showTyping();
+      sendToAPI([{ role: 'user', content: '[Customer just opened the chat widget on lancepettay.me and accepted the AI assistant disclosure. Send a brief, warm greeting — one sentence max. Do not list services.]' }])
+        .then((reply) => {
+          hideTyping();
+          addBotMessage(reply);
+          conversationHistory = [{ role: 'assistant', content: reply }];
+        });
+    }
+  });
 
   chatFab.addEventListener('click', toggleChat);
   chatClose.addEventListener('click', toggleChat);
