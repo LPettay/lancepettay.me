@@ -1790,7 +1790,7 @@ ul { list-style: none; }
     pointer-events: none;
     transform: translateY(100%);
     transition: transform 0.3s var(--ease-out);
-    z-index: 960;
+    z-index: 1100;
   }
 
   .chat-panel.open {
