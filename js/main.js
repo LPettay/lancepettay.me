@@ -255,39 +255,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let chatOpen = false;
   let chatInitialized = false;
-  let chatConsented = false;
-  // Conversation history for Claude API
   let conversationHistory = [];
-
-  const chatWelcome = document.getElementById('chatWelcome');
-  const chatStart = document.getElementById('chatStart');
 
   function toggleChat() {
     chatOpen = !chatOpen;
     chatFab.classList.toggle('active', chatOpen);
     chatPanel.classList.toggle('open', chatOpen);
-  }
 
-  // Consent → start chat
-  chatStart.addEventListener('click', () => {
-    chatConsented = true;
-    chatWelcome.style.display = 'none';
-    chatMessages.style.display = 'flex';
-    chatForm.style.display = 'flex';
-    chatTyping.style.display = '';
-    chatInput.focus();
-
-    if (!chatInitialized) {
+    if (chatOpen && !chatInitialized) {
       chatInitialized = true;
+      chatInput.focus();
       showTyping();
-      sendToAPI([{ role: 'user', content: '[Customer just opened the chat widget on lancepettay.me and accepted the AI assistant disclosure. Send a brief, warm greeting — one sentence max. Do not list services.]' }])
+      sendToAPI([{ role: 'user', content: '[Customer just opened the chat widget on lancepettay.me. Send a brief, warm greeting — one sentence max. Do not list services.]' }])
         .then((reply) => {
           hideTyping();
           addBotMessage(reply);
           conversationHistory = [{ role: 'assistant', content: reply }];
         });
+    } else if (chatOpen) {
+      chatInput.focus();
     }
-  });
+  }
 
   chatFab.addEventListener('click', toggleChat);
   chatClose.addEventListener('click', toggleChat);

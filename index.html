@@ -359,62 +359,38 @@
 
   <!-- ===== CHAT WIDGET ===== -->
   <button class="chat-fab" id="chatFab" aria-label="Open chat">
-    <svg class="chat-fab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <svg class="chat-fab-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    <svg class="chat-fab-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg class="chat-fab-close" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
     <span class="chat-fab-pulse" aria-hidden="true"></span>
   </button>
 
   <div class="chat-panel" id="chatPanel">
     <div class="chat-header">
       <div class="chat-header-info">
-        <div class="chat-avatar">
-          <img src="img/profile.jpg" alt="Lance">
-          <span class="chat-status-dot"></span>
-        </div>
+        <div class="chat-header-dot"></div>
         <div>
-          <div class="chat-header-name">Lance Pettay</div>
-          <div class="chat-header-status">Typically replies instantly</div>
+          <div class="chat-header-name">LP Assistant</div>
+          <div class="chat-header-status">Online</div>
         </div>
       </div>
       <button class="chat-close" id="chatClose" aria-label="Close chat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
       </button>
     </div>
-    <div class="chat-welcome" id="chatWelcome">
-      <div class="chat-welcome-inner">
-        <div class="chat-welcome-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <h3>Chat with our AI assistant</h3>
-        <p>Ask about services, pricing, or what we can do for your business.</p>
-        <div class="chat-welcome-details">
-          <div class="chat-welcome-item">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
-            Conversation shared with Lance
-          </div>
-          <div class="chat-welcome-item">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
-            No data stored or sold
-          </div>
-        </div>
-        <button class="btn btn-primary btn-glow chat-welcome-start" id="chatStart">
-          Start Chatting
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </button>
-      </div>
+    <div class="chat-notice" id="chatNotice">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      AI assistant. Your conversation is shared with Lance to prepare for your call.
     </div>
-    <div class="chat-messages" id="chatMessages" style="display:none">
-      <!-- Messages render here -->
-    </div>
-    <div class="chat-typing" id="chatTyping" style="display:none" aria-hidden="true">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-typing" id="chatTyping" aria-hidden="true">
       <div class="typing-dots">
         <span></span><span></span><span></span>
       </div>
     </div>
-    <form class="chat-input" id="chatForm" style="display:none">
+    <form class="chat-input" id="chatForm">
       <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off" aria-label="Chat message">
       <button type="submit" class="chat-send" aria-label="Send message">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="m22 2-10 10"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="m22 2-10 10"/></svg>
       </button>
     </form>
   </div>
