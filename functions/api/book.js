@@ -1,6 +1,5 @@
 // POST /api/book { name, email, phone, slot, notes }
-// Creates a Google Calendar event with both Lance and the client as attendees
-// Google sends invite emails to everyone automatically
+// Creates a Google Calendar event + sends Lance a notification email
 
 const LANCE_EMAIL = 'lancepettay@gmail.com';
 
@@ -17,6 +16,51 @@ async function getAccessToken(env) {
   });
   const data = await res.json();
   return data.access_token;
+}
+
+// Send email via Gmail API
+async function sendNotification(token, { name, email, phone, slot, notes, timeStr }) {
+  const subject = `New Booking: ${name} — ${timeStr}`;
+  const body = [
+    `New consultation booked via lancepettay.me`,
+    ``,
+    `Client: ${name}`,
+    `Email: ${email}`,
+    phone ? `Phone: ${phone}` : null,
+    notes ? `Notes: ${notes}` : null,
+    ``,
+    `Time: ${timeStr}`,
+    ``,
+    `The client has received a calendar invite.`,
+    `Check your calendar to accept or reschedule.`,
+  ].filter(Boolean).join('\n');
+
+  // Gmail API requires RFC 2822 formatted email, base64url encoded
+  const message = [
+    `To: ${LANCE_EMAIL}`,
+    `Subject: ${subject}`,
+    `Content-Type: text/plain; charset=utf-8`,
+    ``,
+    body,
+  ].join('\r\n');
+
+  const encoded = btoa(unescape(encodeURIComponent(message)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+
+  const res = await fetch('https://www.googleapis.com/gmail/v1/users/me/messages/send', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ raw: encoded }),
+  });
+
+  if (!res.ok) {
+    console.error('Gmail send error:', res.status, await res.text());
+  }
 }
 
 const CORS = {
@@ -41,6 +85,16 @@ export async function onRequestPost(context) {
     const token = await getAccessToken(env);
     const startTime = new Date(slot);
     const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);
+
+    // Human-readable time for notification
+    const timeStr = startTime.toLocaleString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZone: 'America/Chicago',
+    }) + ' CT';
 
     const description = [
       'Free 30-minute consultation booked via lancepettay.me',
@@ -75,7 +129,7 @@ export async function onRequestPost(context) {
       guestsCanSeeOtherGuests: false,
     };
 
-    // sendUpdates=all tells Google to email invites to all attendees
+    // Create calendar event
     const calRes = await fetch(
       'https://www.googleapis.com/calendar/v3/calendars/primary/events?sendUpdates=all',
       {
@@ -97,6 +151,11 @@ export async function onRequestPost(context) {
     }
 
     const created = await calRes.json();
+
+    // Send Lance a notification email (don't await — fire and forget)
+    sendNotification(token, { name, email, phone, slot, notes, timeStr }).catch(
+      (err) => console.error('Notification email failed:', err)
+    );
 
     return new Response(JSON.stringify({
       success: true,
