@@ -1387,6 +1387,22 @@ ul { list-style: none; }
   pointer-events: auto;
 }
 
+/* Drag handle — mobile only */
+.chat-drag-handle {
+  display: none;
+  justify-content: center;
+  padding: 0.5rem 0 0.25rem;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.chat-drag-handle span {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
 /* Header */
 .chat-header {
   display: flex;
@@ -1736,11 +1752,29 @@ ul { list-style: none; }
     background-image: url('../img/hero-bg-mobile.jpg');
   }
 
+  /* Kill expensive GPU effects on mobile */
+  .orb {
+    display: none;
+  }
+
+  .hero::before {
+    background: linear-gradient(
+      180deg,
+      rgba(7, 15, 10, 0.5) 0%,
+      rgba(7, 15, 10, 0.7) 60%,
+      var(--bg) 100%
+    );
+  }
+
   .mouse-glow {
     display: none;
   }
 
   .scroll-hint {
+    display: none;
+  }
+
+  .card-glow {
     display: none;
   }
 
@@ -1750,19 +1784,37 @@ ul { list-style: none; }
     right: 0;
     left: 0;
     width: 100%;
-    height: 70vh;
-    max-height: 70vh;
+    height: 65vh;
+    max-height: 65vh;
     border-radius: 16px 16px 0 0;
     border-bottom: none;
+    transform: translateY(100%);
+    opacity: 1;
   }
 
   .chat-panel.open {
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 
   .chat-fab {
     bottom: 1rem;
     right: 1rem;
+    z-index: 950;
+  }
+
+  /* When chat is open, hide FAB */
+  .chat-fab.active {
+    display: none;
+  }
+
+  .chat-drag-handle {
+    display: flex;
+  }
+
+  .chat-close {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
   }
 }
 

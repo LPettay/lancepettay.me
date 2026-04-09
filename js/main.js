@@ -299,6 +299,13 @@ document.addEventListener('DOMContentLoaded', () => {
     chatFab.classList.toggle('active', chatOpen);
     chatPanel.classList.toggle('open', chatOpen);
 
+    // Lock body scroll on mobile when chat is open
+    if (chatOpen && window.innerWidth <= 768) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
     if (chatOpen && !chatInitialized) {
       chatInitialized = true;
       chatInput.focus();
@@ -324,20 +331,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function openChat() {
+    if (!chatOpen) toggleChat();
+  }
+
+  function closeChat() {
+    if (chatOpen) toggleChat();
+  }
+
   chatFab.addEventListener('click', toggleChat);
-  chatClose.addEventListener('click', toggleChat);
+  chatClose.addEventListener('click', closeChat);
+
+  // Drag handle closes chat on mobile
+  const dragHandle = document.querySelector('.chat-drag-handle');
+  if (dragHandle) dragHandle.addEventListener('click', closeChat);
+
+  // Lock body scroll when chat open on mobile
+  function updateBodyScroll() {
+    if (chatOpen && window.innerWidth <= 768) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Patch toggleChat to manage body scroll
+  const origToggle = toggleChat;
 
   // All "open-chat" buttons
   document.querySelectorAll('.open-chat').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      if (!chatOpen) toggleChat();
+      openChat();
     });
   });
 
   // Close on escape
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && chatOpen) toggleChat();
+    if (e.key === 'Escape' && chatOpen) closeChat();
   });
 
   function addBotMessage(text, skipAnim) {
