@@ -1,9 +1,16 @@
 // GET /api/slots?date=2026-04-10
-// Returns available 30-min consultation slots from Google Calendar
+// Returns available 30-min consultation slots using FreeBusy across ALL calendars
 
-const BUSINESS_HOURS = { start: 9, end: 17 }; // 9 AM - 5 PM
+const BUSINESS_HOURS = { start: 9, end: 17 }; // 9 AM - 5 PM CT
 const SLOT_DURATION = 30; // minutes
-const TIMEZONE = 'America/Chicago'; // Central Time
+const CT_OFFSET = '-05:00'; // Central Time (adjust for CDT/CST as needed)
+
+// All calendars to check for conflicts
+const CALENDAR_IDS = [
+  'primary',
+  'lance.pettay@torq.io',
+  'family01518585090897192736@group.calendar.google.com',
+];
 
 async function getAccessToken(env) {
   const res = await fetch('https://oauth2.googleapis.com/token', {
@@ -41,50 +48,60 @@ export async function onRequestGet(context) {
   try {
     const token = await getAccessToken(env);
 
-    // Get events for the requested date
-    const timeMin = `${dateStr}T00:00:00-06:00`;
-    const timeMax = `${dateStr}T23:59:59-06:00`;
+    const timeMin = `${dateStr}T${String(BUSINESS_HOURS.start).padStart(2, '0')}:00:00${CT_OFFSET}`;
+    const timeMax = `${dateStr}T${String(BUSINESS_HOURS.end).padStart(2, '0')}:00:00${CT_OFFSET}`;
 
-    const calRes = await fetch(
-      `https://www.googleapis.com/calendar/v3/calendars/primary/events?` +
-      `timeMin=${encodeURIComponent(timeMin)}&timeMax=${encodeURIComponent(timeMax)}` +
-      `&singleEvents=true&orderBy=startTime`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    // FreeBusy API checks ALL specified calendars at once
+    const fbRes = await fetch('https://www.googleapis.com/calendar/v3/freeBusy', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        timeMin,
+        timeMax,
+        items: CALENDAR_IDS.map((id) => ({ id })),
+      }),
+    });
 
-    if (!calRes.ok) {
-      console.error('Calendar API error:', calRes.status, await calRes.text());
+    if (!fbRes.ok) {
+      console.error('FreeBusy API error:', fbRes.status, await fbRes.text());
       return new Response(JSON.stringify({ error: 'Calendar unavailable' }), {
         status: 502,
         headers: { 'Content-Type': 'application/json', ...CORS },
       });
     }
 
-    const calData = await calRes.json();
-    const busySlots = (calData.items || []).map((e) => ({
-      start: new Date(e.start.dateTime || e.start.date).getTime(),
-      end: new Date(e.end.dateTime || e.end.date).getTime(),
-    }));
+    const fbData = await fbRes.json();
 
-    // Generate all possible slots during business hours
+    // Merge all busy blocks from all calendars
+    const allBusy = [];
+    for (const calInfo of Object.values(fbData.calendars || {})) {
+      for (const block of calInfo.busy || []) {
+        allBusy.push({
+          start: new Date(block.start).getTime(),
+          end: new Date(block.end).getTime(),
+        });
+      }
+    }
+
+    // Generate slots and filter against merged busy blocks
     const slots = [];
-    const baseDate = new Date(`${dateStr}T${String(BUSINESS_HOURS.start).padStart(2, '0')}:00:00`);
+    const now = Date.now();
 
-    // Adjust for Central Time offset (rough — Worker doesn't have full TZ support)
-    // We'll work in UTC offsets
     for (let h = BUSINESS_HOURS.start; h < BUSINESS_HOURS.end; h++) {
       for (let m = 0; m < 60; m += SLOT_DURATION) {
-        const slotStart = new Date(`${dateStr}T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00-05:00`);
+        const slotStart = new Date(`${dateStr}T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00${CT_OFFSET}`);
         const slotEnd = new Date(slotStart.getTime() + SLOT_DURATION * 60 * 1000);
 
-        // Check if slot conflicts with any busy period
-        const isBusy = busySlots.some(
+        // Skip past slots
+        if (slotStart.getTime() < now) continue;
+
+        // Check against all busy blocks
+        const isBusy = allBusy.some(
           (busy) => slotStart.getTime() < busy.end && slotEnd.getTime() > busy.start
         );
-
-        // Don't show slots in the past
-        const now = new Date();
-        if (slotStart.getTime() < now.getTime()) continue;
 
         if (!isBusy) {
           slots.push({
