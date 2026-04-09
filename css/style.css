@@ -1474,6 +1474,12 @@ ul { list-style: none; }
   justify-content: center;
   padding: 1.5rem;
   text-align: center;
+  overflow: hidden;
+}
+
+.chat-welcome svg {
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .chat-welcome-inner {
