@@ -1437,24 +1437,6 @@ ul { list-style: none; }
   background: var(--bg-surface-hover);
 }
 
-/* Disclosure notice */
-.chat-notice {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.45rem 1rem;
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  background: var(--bg-surface);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-
-.chat-notice svg {
-  flex-shrink: 0;
-  opacity: 0.5;
-}
-
 /* Messages */
 .chat-messages {
   flex: 1;
