@@ -1879,6 +1879,11 @@ ul { list-style: none; }
     flex: 1;
   }
 
+  .chat-welcome {
+    justify-content: flex-start;
+    padding-top: 15vh;
+  }
+
   .chat-fab {
     bottom: 1rem;
     right: 1rem;
