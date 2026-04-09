@@ -552,10 +552,11 @@ document.addEventListener('DOMContentLoaded', () => {
   bookForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('bookName').value.trim();
-    const contact = document.getElementById('bookContact').value.trim();
+    const email = document.getElementById('bookEmail').value.trim();
+    const phone = document.getElementById('bookPhone').value.trim();
     const notes = document.getElementById('bookNotes').value.trim();
 
-    if (!name || !contact) return;
+    if (!name || !email) return;
 
     const submitBtn = bookForm.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
@@ -565,13 +566,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch('/api/book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, contact, slot: selectedSlot.start, notes }),
+        body: JSON.stringify({ name, email, phone, slot: selectedSlot.start, notes }),
       });
       const data = await res.json();
 
       if (data.success) {
         document.getElementById('bookConfirmText').textContent =
-          `${selectedSlot.time} is locked in. Lance will reach out to you at the scheduled time.`;
+          `${selectedSlot.time} is locked in. Check your email for the calendar invite — you can respond or reschedule from there.`;
         showStep(3);
       } else {
         submitBtn.disabled = false;

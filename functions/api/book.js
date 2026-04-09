@@ -1,5 +1,8 @@
-// POST /api/book { name, contact, slot, notes }
-// Creates a Google Calendar event for a consultation
+// POST /api/book { name, email, phone, slot, notes }
+// Creates a Google Calendar event with both Lance and the client as attendees
+// Google sends invite emails to everyone automatically
+
+const LANCE_EMAIL = 'lancepettay@gmail.com';
 
 async function getAccessToken(env) {
   const res = await fetch('https://oauth2.googleapis.com/token', {
@@ -26,10 +29,10 @@ export async function onRequestPost(context) {
   const { request, env } = context;
 
   try {
-    const { name, contact, slot, notes } = await request.json();
+    const { name, email, phone, slot, notes } = await request.json();
 
-    if (!name || !contact || !slot) {
-      return new Response(JSON.stringify({ error: 'name, contact, and slot are required' }), {
+    if (!name || !email || !slot) {
+      return new Response(JSON.stringify({ error: 'name, email, and slot are required' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json', ...CORS },
       });
@@ -39,9 +42,20 @@ export async function onRequestPost(context) {
     const startTime = new Date(slot);
     const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);
 
+    const description = [
+      'Free 30-minute consultation booked via lancepettay.me',
+      '',
+      `Name: ${name}`,
+      `Email: ${email}`,
+      phone ? `Phone: ${phone}` : '',
+      notes ? `Notes: ${notes}` : '',
+      '',
+      'Booked automatically — respond or reschedule as needed.',
+    ].filter(Boolean).join('\n');
+
     const event = {
       summary: `Consultation — ${name}`,
-      description: `Free 30-minute consultation booked via lancepettay.me\n\nName: ${name}\nContact: ${contact}\n${notes ? 'Notes: ' + notes : ''}\n\nBooked automatically.`,
+      description,
       start: {
         dateTime: startTime.toISOString(),
         timeZone: 'America/Chicago',
@@ -50,17 +64,25 @@ export async function onRequestPost(context) {
         dateTime: endTime.toISOString(),
         timeZone: 'America/Chicago',
       },
+      attendees: [
+        { email: LANCE_EMAIL, responseStatus: 'accepted' },
+        { email: email, displayName: name },
+      ],
       reminders: {
         useDefault: false,
         overrides: [
+          { method: 'email', minutes: 60 },
           { method: 'popup', minutes: 30 },
           { method: 'popup', minutes: 10 },
         ],
       },
+      guestsCanModify: false,
+      guestsCanSeeOtherGuests: false,
     };
 
+    // sendUpdates=all tells Google to email invites to all attendees
     const calRes = await fetch(
-      'https://www.googleapis.com/calendar/v3/calendars/primary/events',
+      'https://www.googleapis.com/calendar/v3/calendars/primary/events?sendUpdates=all',
       {
         method: 'POST',
         headers: {
@@ -85,7 +107,7 @@ export async function onRequestPost(context) {
       success: true,
       event_id: created.id,
       time: startTime.toISOString(),
-      message: `You're booked! Lance will call you at the scheduled time.`,
+      message: `You're booked! Check your email for the calendar invite.`,
     }), {
       headers: { 'Content-Type': 'application/json', ...CORS },
     });
