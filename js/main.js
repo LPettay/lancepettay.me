@@ -3,6 +3,10 @@
    ======================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Force scroll to top on page load
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
   // Respect reduced motion preferences
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -304,14 +308,11 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
-      // Reset any keyboard-adjusted sizing
-      chatPanel.style.height = '';
-      chatPanel.style.bottom = '';
     }
 
     if (chatOpen && !chatInitialized) {
       chatInitialized = true;
-      chatInput.focus();
+      chatInput.focus({ preventScroll: true });
 
       // Try to restore previous session
       const saved = loadChat();
@@ -330,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
           });
       }
     } else if (chatOpen) {
-      chatInput.focus();
+      chatInput.focus({ preventScroll: true });
     }
   }
 
@@ -342,20 +343,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (chatOpen) toggleChat();
   }
 
-  // Handle mobile keyboard resize — keep chat panel in visible area
-  if ('visualViewport' in window) {
-    window.visualViewport.addEventListener('resize', () => {
-      if (!chatOpen || window.innerWidth > 768) return;
-      const vvh = window.visualViewport.height;
-      chatPanel.style.height = (vvh * 0.6) + 'px';
-      chatPanel.style.bottom = (window.innerHeight - vvh - window.visualViewport.offsetTop) + 'px';
-    });
-
-    window.visualViewport.addEventListener('scroll', () => {
-      if (!chatOpen || window.innerWidth > 768) return;
-      chatPanel.style.bottom = (window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop) + 'px';
-    });
-  }
 
   chatFab.addEventListener('click', toggleChat);
   chatClose.addEventListener('click', closeChat);
@@ -638,6 +625,6 @@ document.addEventListener('DOMContentLoaded', () => {
     addBotMessage(reply);
     saveChat();
     chatInput.disabled = false;
-    chatInput.focus();
+    chatInput.focus({ preventScroll: true });
   });
 });
