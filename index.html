@@ -385,16 +385,16 @@
         <div class="chat-welcome-avatar">
           <img src="img/profile.jpg" alt="Lance Pettay">
         </div>
-        <h3>Hey, I'm Lance's assistant.</h3>
-        <p>I'm an AI that can answer questions about our services, pricing, and help figure out what your business needs.</p>
+        <h3>Chat with Lance's AI assistant</h3>
+        <p>Ask about services, pricing, or what we can do for your business.</p>
         <div class="chat-welcome-details">
           <div class="chat-welcome-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
-            Your conversation is shared with Lance so he can prepare before you connect
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Conversation shared with Lance
           </div>
           <div class="chat-welcome-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
-            No personal data is stored or sold — ever
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+            No data stored or sold
           </div>
         </div>
         <button class="btn btn-primary btn-glow chat-welcome-start" id="chatStart">
@@ -406,12 +406,12 @@
     <div class="chat-messages" id="chatMessages" style="display:none">
       <!-- Messages render here -->
     </div>
-    <div class="chat-typing" id="chatTyping" aria-hidden="true">
+    <div class="chat-typing" id="chatTyping" style="display:none" aria-hidden="true">
       <div class="typing-dots">
         <span></span><span></span><span></span>
       </div>
     </div>
-    <form class="chat-input" id="chatForm">
+    <form class="chat-input" id="chatForm" style="display:none">
       <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off" aria-label="Chat message">
       <button type="submit" class="chat-send" aria-label="Send message">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="m22 2-10 10"/></svg>

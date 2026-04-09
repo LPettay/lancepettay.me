@@ -273,6 +273,8 @@ document.addEventListener('DOMContentLoaded', () => {
     chatConsented = true;
     chatWelcome.style.display = 'none';
     chatMessages.style.display = 'flex';
+    chatForm.style.display = 'flex';
+    chatTyping.style.display = '';
     chatInput.focus();
 
     if (!chatInitialized) {
