@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
       chatInitialized = true;
       chatInput.focus();
       showTyping();
-      sendToAPI([{ role: 'user', content: '[Customer just opened the chat widget on lancepettay.me. Send a brief, warm greeting — one sentence max. Do not list services.]' }])
+      sendToAPI([{ role: 'user', content: '[Customer just opened the chat widget on lancepettay.me. Greet them warmly in 1-2 short sentences. Mention that you are an AI assistant and that the conversation will be shared with Lance so he can prepare. Keep it natural, not robotic.]' }])
         .then((reply) => {
           hideTyping();
           addBotMessage(reply);
