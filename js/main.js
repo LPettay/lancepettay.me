@@ -378,11 +378,16 @@ document.addEventListener('DOMContentLoaded', () => {
     while (count < 9) {
       const dow = d.getDay();
       if (dow !== 0 && dow !== 6) {
-        const dateStr = d.toISOString().slice(0, 10);
+        // Use local date parts to avoid UTC date shift
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const dateStr = `${yyyy}-${mm}-${dd}`;
+        const label = `${days[dow]}, ${months[d.getMonth()]} ${d.getDate()}`;
         const btn = document.createElement('button');
         btn.className = 'book-date-btn';
         btn.innerHTML = `<span class="day-name">${days[dow]}</span><span class="day-num">${months[d.getMonth()]} ${d.getDate()}</span>`;
-        btn.addEventListener('click', () => selectDate(dateStr, `${days[dow]}, ${months[d.getMonth()]} ${d.getDate()}`));
+        btn.addEventListener('click', () => selectDate(dateStr, label));
         bookDates.appendChild(btn);
         count++;
       }
