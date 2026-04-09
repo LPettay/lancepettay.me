@@ -1780,16 +1780,24 @@ ul { list-style: none; }
 
   /* Chat bottom sheet on mobile */
   .chat-panel {
+    top: auto;
     bottom: 0;
     right: 0;
     left: 0;
     width: 100%;
-    height: 65vh;
-    max-height: 65vh;
+    height: 60dvh;
+    height: 60vh; /* fallback for older browsers */
+    max-height: none;
     border-radius: 16px 16px 0 0;
     border-bottom: none;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
     transform: translateY(100%);
     opacity: 1;
+    z-index: 960;
+  }
+
+  @supports (height: 60dvh) {
+    .chat-panel { height: 60dvh; }
   }
 
   .chat-panel.open {
