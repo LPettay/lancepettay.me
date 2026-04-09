@@ -257,6 +257,43 @@ document.addEventListener('DOMContentLoaded', () => {
   let chatInitialized = false;
   let conversationHistory = [];
 
+  const CHAT_STORAGE_KEY = 'lp_chat';
+  const CHAT_TTL = 30 * 60 * 1000; // 30 minutes
+
+  function saveChat() {
+    localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify({
+      ts: Date.now(),
+      history: conversationHistory,
+    }));
+  }
+
+  function loadChat() {
+    try {
+      const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      if (Date.now() - data.ts > CHAT_TTL) {
+        localStorage.removeItem(CHAT_STORAGE_KEY);
+        return null;
+      }
+      return data.history;
+    } catch {
+      localStorage.removeItem(CHAT_STORAGE_KEY);
+      return null;
+    }
+  }
+
+  function restoreMessages(history) {
+    chatMessages.innerHTML = '';
+    for (const msg of history) {
+      if (msg.role === 'assistant') {
+        addBotMessage(msg.content, true);
+      } else if (msg.role === 'user') {
+        addUserMessage(msg.content, true);
+      }
+    }
+  }
+
   function toggleChat() {
     chatOpen = !chatOpen;
     chatFab.classList.toggle('active', chatOpen);
@@ -265,13 +302,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (chatOpen && !chatInitialized) {
       chatInitialized = true;
       chatInput.focus();
-      showTyping();
-      sendToAPI([{ role: 'user', content: '[Customer just opened the chat widget on lancepettay.me. Greet them warmly in 1-2 short sentences. Mention that you are an AI assistant and that the conversation will be shared with Lance so he can prepare. Keep it natural, not robotic.]' }])
-        .then((reply) => {
-          hideTyping();
-          addBotMessage(reply);
-          conversationHistory = [{ role: 'assistant', content: reply }];
-        });
+
+      // Try to restore previous session
+      const saved = loadChat();
+      if (saved && saved.length > 0) {
+        conversationHistory = saved;
+        restoreMessages(saved);
+      } else {
+        // Fresh session — get AI greeting
+        showTyping();
+        sendToAPI([{ role: 'user', content: '[Customer just opened the chat widget on lancepettay.me. Greet them warmly in 1-2 short sentences. Mention that you are an AI assistant and that the conversation will be shared with Lance so he can prepare. Keep it natural, not robotic.]' }])
+          .then((reply) => {
+            hideTyping();
+            addBotMessage(reply);
+            conversationHistory = [{ role: 'assistant', content: reply }];
+            saveChat();
+          });
+      }
     } else if (chatOpen) {
       chatInput.focus();
     }
@@ -293,17 +340,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape' && chatOpen) toggleChat();
   });
 
-  function addBotMessage(text) {
+  function addBotMessage(text, skipAnim) {
     const msg = document.createElement('div');
     msg.className = 'chat-msg chat-msg-bot';
+    if (skipAnim) msg.style.animation = 'none';
     msg.textContent = text;
     chatMessages.appendChild(msg);
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
-  function addUserMessage(text) {
+  function addUserMessage(text, skipAnim) {
     const msg = document.createElement('div');
     msg.className = 'chat-msg chat-msg-user';
+    if (skipAnim) msg.style.animation = 'none';
     msg.textContent = text;
     chatMessages.appendChild(msg);
     chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -499,6 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     conversationHistory.push({ role: 'assistant', content: reply });
     addBotMessage(reply);
+    saveChat();
     chatInput.disabled = false;
     chatInput.focus();
   });
