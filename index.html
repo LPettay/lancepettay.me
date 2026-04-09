@@ -275,22 +275,18 @@
               <h3>Chat Now</h3>
               <span class="contact-value">Instant answers</span>
             </div>
-            <a class="contact-card contact-card-book" href="#book" id="bookCard">
+            <button class="contact-card contact-card-book open-book">
               <div class="contact-icon icon-book">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>
               </div>
               <h3>Book a Call</h3>
               <span class="contact-value">Pick a time</span>
-            </a>
+            </button>
           </div>
 
-          <!-- Calendar embed placeholder — replace href with Cal.com link -->
+          <!-- Inline booking UI -->
           <div id="book" class="book-section reveal">
             <p class="book-label">Pick a time that works for you — 30 minutes, free, no obligation.</p>
-            <a href="https://cal.com" class="btn btn-primary btn-glow btn-large" id="bookBtn" target="_blank" rel="noopener">
-              Open My Calendar
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
-            </a>
           </div>
         </div>
       </div>
@@ -306,6 +302,60 @@
       </div>
     </div>
   </footer>
+
+  <!-- ===== BOOKING MODAL ===== -->
+  <div class="book-overlay" id="bookOverlay">
+    <div class="book-modal">
+      <button class="book-close" id="bookClose" aria-label="Close booking">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+
+      <!-- Step 1: Pick a date -->
+      <div class="book-step" id="bookStep1">
+        <h3>Pick a Day</h3>
+        <p class="book-sub">Free 30-minute consultation — Central Time</p>
+        <div class="book-dates" id="bookDates"></div>
+      </div>
+
+      <!-- Step 2: Pick a time -->
+      <div class="book-step" id="bookStep2" style="display:none">
+        <button class="book-back" id="bookBack1" aria-label="Go back">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        </button>
+        <h3 id="bookDateLabel">Available Times</h3>
+        <p class="book-sub">30-minute slots</p>
+        <div class="book-slots" id="bookSlots"></div>
+        <p class="book-loading" id="bookLoading">Loading available times...</p>
+      </div>
+
+      <!-- Step 3: Your info -->
+      <div class="book-step" id="bookStep3" style="display:none">
+        <button class="book-back" id="bookBack2" aria-label="Go back">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        </button>
+        <h3 id="bookTimeLabel">Your Info</h3>
+        <form id="bookForm" class="book-form">
+          <input type="text" id="bookName" placeholder="Your name" required>
+          <input type="tel" id="bookContact" placeholder="Phone or email" required>
+          <input type="text" id="bookNotes" placeholder="What do you need help with? (optional)">
+          <button type="submit" class="btn btn-primary btn-glow">
+            Confirm Booking
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <!-- Step 4: Confirmation -->
+      <div class="book-step" id="bookStep4" style="display:none">
+        <div class="book-confirmed">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <h3>You're booked!</h3>
+          <p id="bookConfirmText">Lance will call you at the scheduled time.</p>
+          <button class="btn btn-secondary" id="bookDone">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== CHAT WIDGET ===== -->
   <button class="chat-fab" id="chatFab" aria-label="Open chat">

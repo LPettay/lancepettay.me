@@ -1060,6 +1060,229 @@ ul { list-style: none; }
   text-align: center;
 }
 
+/* ========================================
+   Booking Modal
+   ======================================== */
+.book-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.book-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.book-modal {
+  background: rgba(7, 15, 10, 0.97);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 420px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  transform: translateY(20px) scale(0.95);
+  transition: transform 0.3s var(--ease-out);
+}
+
+.book-overlay.open .book-modal {
+  transform: translateY(0) scale(1);
+}
+
+.book-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.book-close:hover {
+  background: var(--bg-surface-hover);
+}
+
+.book-close svg {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+}
+
+.book-back {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  color: var(--text-muted);
+}
+
+.book-back:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text);
+}
+
+.book-step h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+
+.book-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+/* Date grid */
+.book-dates {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.book-date-btn {
+  padding: 0.75rem 0.5rem;
+  border-radius: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+.book-date-btn:hover {
+  border-color: var(--primary);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.book-date-btn .day-name {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.book-date-btn .day-num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Time slots */
+.book-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.book-slot-btn {
+  padding: 0.6rem;
+  border-radius: 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  font-size: 0.85rem;
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+.book-slot-btn:hover {
+  border-color: var(--primary);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.book-loading {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  padding: 1rem 0;
+}
+
+/* Booking form */
+.book-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.book-form input {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.book-form input::placeholder {
+  color: var(--text-muted);
+}
+
+.book-form input:focus {
+  border-color: var(--primary);
+}
+
+.book-form .btn {
+  margin-top: 0.25rem;
+  justify-content: center;
+}
+
+/* Confirmation */
+.book-confirmed {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.book-confirmed svg {
+  margin-bottom: 1rem;
+}
+
+.book-confirmed h3 {
+  margin-bottom: 0.5rem;
+}
+
+.book-confirmed p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
 .book-label {
   font-size: 0.95rem;
   color: var(--text-secondary);

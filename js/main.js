@@ -328,6 +328,150 @@ document.addEventListener('DOMContentLoaded', () => {
     chatTyping.classList.remove('visible');
   }
 
+  /* ========================================
+     Booking Modal
+     ======================================== */
+  const bookOverlay = document.getElementById('bookOverlay');
+  const bookClose = document.getElementById('bookClose');
+  const bookDates = document.getElementById('bookDates');
+  const bookSlots = document.getElementById('bookSlots');
+  const bookLoading = document.getElementById('bookLoading');
+  const bookForm = document.getElementById('bookForm');
+  const bookDone = document.getElementById('bookDone');
+
+  const steps = [
+    document.getElementById('bookStep1'),
+    document.getElementById('bookStep2'),
+    document.getElementById('bookStep3'),
+    document.getElementById('bookStep4'),
+  ];
+
+  let selectedDate = null;
+  let selectedSlot = null;
+
+  function showStep(n) {
+    steps.forEach((s, i) => (s.style.display = i === n ? 'block' : 'none'));
+  }
+
+  function openBooking() {
+    bookOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    showStep(0);
+    buildDateGrid();
+  }
+
+  function closeBooking() {
+    bookOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Open/close booking
+  document.querySelectorAll('.open-book').forEach((btn) =>
+    btn.addEventListener('click', (e) => { e.preventDefault(); openBooking(); })
+  );
+  bookClose.addEventListener('click', closeBooking);
+  bookOverlay.addEventListener('click', (e) => { if (e.target === bookOverlay) closeBooking(); });
+  document.getElementById('bookBack1').addEventListener('click', () => showStep(0));
+  document.getElementById('bookBack2').addEventListener('click', () => showStep(1));
+  bookDone.addEventListener('click', closeBooking);
+
+  // Build next 9 weekdays
+  function buildDateGrid() {
+    bookDates.innerHTML = '';
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const today = new Date();
+    let count = 0;
+    let d = new Date(today);
+    d.setDate(d.getDate() + 1); // Start tomorrow
+
+    while (count < 9) {
+      const dow = d.getDay();
+      if (dow !== 0 && dow !== 6) {
+        const dateStr = d.toISOString().slice(0, 10);
+        const btn = document.createElement('button');
+        btn.className = 'book-date-btn';
+        btn.innerHTML = `<span class="day-name">${days[dow]}</span><span class="day-num">${months[d.getMonth()]} ${d.getDate()}</span>`;
+        btn.addEventListener('click', () => selectDate(dateStr, `${days[dow]}, ${months[d.getMonth()]} ${d.getDate()}`));
+        bookDates.appendChild(btn);
+        count++;
+      }
+      d.setDate(d.getDate() + 1);
+    }
+  }
+
+  async function selectDate(dateStr, label) {
+    selectedDate = dateStr;
+    document.getElementById('bookDateLabel').textContent = label;
+    showStep(1);
+    bookSlots.innerHTML = '';
+    bookLoading.style.display = 'block';
+
+    try {
+      const res = await fetch(`/api/slots?date=${dateStr}`);
+      const data = await res.json();
+      bookLoading.style.display = 'none';
+
+      if (!data.slots || data.slots.length === 0) {
+        bookSlots.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:0.85rem;">No available slots this day. Try another date.</p>';
+        return;
+      }
+
+      data.slots.forEach((slot) => {
+        const btn = document.createElement('button');
+        btn.className = 'book-slot-btn';
+        btn.textContent = slot.time;
+        btn.addEventListener('click', () => selectSlot(slot, label));
+        bookSlots.appendChild(btn);
+      });
+    } catch {
+      bookLoading.style.display = 'none';
+      bookSlots.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:0.85rem;">Could not load times. Try again or call (316) 350-6609.</p>';
+    }
+  }
+
+  function selectSlot(slot, dateLabel) {
+    selectedSlot = slot;
+    document.getElementById('bookTimeLabel').textContent = `${dateLabel} at ${slot.time}`;
+    showStep(2);
+  }
+
+  bookForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('bookName').value.trim();
+    const contact = document.getElementById('bookContact').value.trim();
+    const notes = document.getElementById('bookNotes').value.trim();
+
+    if (!name || !contact) return;
+
+    const submitBtn = bookForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Booking...';
+
+    try {
+      const res = await fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, contact, slot: selectedSlot.start, notes }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        document.getElementById('bookConfirmText').textContent =
+          `${selectedSlot.time} is locked in. Lance will reach out to you at the scheduled time.`;
+        showStep(3);
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Confirm Booking';
+        alert(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Confirm Booking';
+      alert('Connection error. Call Lance at (316) 350-6609.');
+    }
+  });
+
   // --- Claude API chat ---
   async function sendToAPI(messages) {
     try {
