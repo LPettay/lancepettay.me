@@ -20,7 +20,7 @@ async function getAccessToken(env) {
 
 // Send email via Gmail API
 async function sendNotification(token, { name, email, phone, slot, notes, timeStr }) {
-  const subject = `New Booking: ${name} — ${timeStr}`;
+  const subject = `New Booking: ${name} - ${timeStr}`;
   const body = [
     `New consultation booked via lancepettay.me`,
     ``,
@@ -44,7 +44,10 @@ async function sendNotification(token, { name, email, phone, slot, notes, timeSt
     body,
   ].join('\r\n');
 
-  const encoded = btoa(unescape(encodeURIComponent(message)))
+  // Encode to base64url — handle UTF-8 properly
+  const bytes = new TextEncoder().encode(message);
+  const binary = Array.from(bytes, (b) => String.fromCharCode(b)).join('');
+  const encoded = btoa(binary)
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=+$/, '');
