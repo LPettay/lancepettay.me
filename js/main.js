@@ -518,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     } catch {
       bookLoading.style.display = 'none';
-      bookSlots.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:0.85rem;">Could not load times. Try again or call (316) 350-6609.</p>';
+      bookSlots.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:0.85rem;">Could not load times. Try again or call (360) 938-0944.</p>';
     }
   }
 
@@ -561,7 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Confirm Booking';
-      alert('Connection error. Call Lance at (316) 350-6609.');
+      alert('Connection error. Call Lance at (360) 938-0944.');
     }
   });
 
@@ -574,9 +574,9 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ messages }),
       });
       const data = await res.json();
-      return data.reply || "I'm having trouble right now — call Lance at (316) 350-6609.";
+      return data.reply || "I'm having trouble right now — call Lance at (360) 938-0944.";
     } catch {
-      return "Connection issue — call or text Lance directly at (316) 350-6609.";
+      return "Connection issue — call or text Lance directly at (360) 938-0944.";
     }
   }
 

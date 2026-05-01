@@ -52,7 +52,7 @@ WHEN TO SUGGEST A CALL:
 - When they ask about specific pricing
 - When the project sounds complex
 - When they seem ready to move forward
-Lance's number: (316) 350-6609
+Lance's number: (360) 938-0944
 
 THINGS YOU DON'T DO:
 - Don't make guarantees about results, timelines, or pricing
@@ -114,7 +114,7 @@ export async function onRequestPost(context) {
     }
 
     const data = await response.json();
-    const reply = data.content?.[0]?.text || "Sorry, I'm having trouble right now. Call Lance directly at (316) 350-6609.";
+    const reply = data.content?.[0]?.text || "Sorry, I'm having trouble right now. Call Lance directly at (360) 938-0944.";
 
     return new Response(JSON.stringify({ reply }), {
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -123,7 +123,7 @@ export async function onRequestPost(context) {
     console.error('Worker error:', err);
     return new Response(
       JSON.stringify({
-        reply: "I'm having a moment — call Lance directly at (316) 350-6609 and he'll take care of you.",
+        reply: "I'm having a moment — call Lance directly at (360) 938-0944 and he'll take care of you.",
       }),
       {
         headers: { 'Content-Type': 'application/json', ...corsHeaders },

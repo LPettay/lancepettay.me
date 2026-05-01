@@ -148,7 +148,7 @@ export async function onRequestPost(context) {
     if (!calRes.ok) {
       console.error('Calendar create error:', calRes.status, await calRes.text());
       return new Response(
-        JSON.stringify({ error: 'Could not book the slot. Please try another time or call (316) 350-6609.' }),
+        JSON.stringify({ error: 'Could not book the slot. Please try another time or call (360) 938-0944.' }),
         { status: 502, headers: { 'Content-Type': 'application/json', ...CORS } }
       );
     }
@@ -171,7 +171,7 @@ export async function onRequestPost(context) {
   } catch (err) {
     console.error('Book error:', err);
     return new Response(
-      JSON.stringify({ error: 'Something went wrong. Call Lance at (316) 350-6609.' }),
+      JSON.stringify({ error: 'Something went wrong. Call Lance at (360) 938-0944.' }),
       { status: 500, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
   }

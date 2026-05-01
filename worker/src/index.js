@@ -49,7 +49,7 @@ WHEN TO SUGGEST A CALL:
 - When they ask about specific pricing
 - When the project sounds complex
 - When they seem ready to move forward
-Lance's number: (316) 350-6609
+Lance's number: (360) 938-0944
 
 THINGS YOU DON'T DO:
 - Don't make guarantees about results, timelines, or pricing
@@ -113,7 +113,7 @@ export default {
       if (rateCheck.limited) {
         return new Response(
           JSON.stringify({
-            reply: "I've been chatting a lot! For a faster answer, call or text Lance directly at (316) 350-6609.",
+            reply: "I've been chatting a lot! For a faster answer, call or text Lance directly at (360) 938-0944.",
           }),
           { headers: { 'Content-Type': 'application/json', ...CORS_HEADERS } }
         );
@@ -150,13 +150,13 @@ export default {
         const errorText = await response.text();
         console.error('Claude API error:', response.status, errorText);
         return new Response(
-          JSON.stringify({ reply: "I'm having a moment — call Lance directly at (316) 350-6609." }),
+          JSON.stringify({ reply: "I'm having a moment — call Lance directly at (360) 938-0944." }),
           { headers: { 'Content-Type': 'application/json', ...CORS_HEADERS } }
         );
       }
 
       const data = await response.json();
-      const reply = data.content?.[0]?.text || "Sorry, I'm having trouble right now. Call Lance at (316) 350-6609.";
+      const reply = data.content?.[0]?.text || "Sorry, I'm having trouble right now. Call Lance at (360) 938-0944.";
 
       return new Response(JSON.stringify({ reply }), {
         headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
@@ -164,7 +164,7 @@ export default {
     } catch (err) {
       console.error('Worker error:', err);
       return new Response(
-        JSON.stringify({ reply: "I'm having trouble — call or text Lance at (316) 350-6609." }),
+        JSON.stringify({ reply: "I'm having trouble — call or text Lance at (360) 938-0944." }),
         { headers: { 'Content-Type': 'application/json', ...CORS_HEADERS } }
       );
     }
